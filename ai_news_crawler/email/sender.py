@@ -1,12 +1,9 @@
 import sys
+import sys
 import logging
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
-# Force UTF-8 encoding for everything
-if sys.version_info >= (3, 7):
-    sys.setdefaultencoding('utf-8')
 
 from jinja2 import Environment, FileSystemLoader
 
