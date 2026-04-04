@@ -2,6 +2,7 @@ import logging
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.header import Header
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -26,7 +27,7 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
     html = render_briefing(context)
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"AI Daily Briefing - {context['date']}"
+    msg["Subject"] = Header(f"AI 每日简报 - {context['date']}", 'utf-8')
     msg["From"] = settings.smtp_username
     msg["To"] = settings.recipient_email
 
