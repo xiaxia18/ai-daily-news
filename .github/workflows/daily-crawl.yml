@@ -47,14 +47,15 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
         run: |
           python -c "
+import os
 import smtplib
 from email.mime.text import MIMEText
 msg = MIMEText('The daily AI news crawler failed. Please check the GitHub Actions run.')
 msg['Subject'] = 'ALERT: AI Daily Briefing Failed'
-msg['From'] = '${{ secrets.SMTP_USERNAME }}'
-msg['To'] = '${{ secrets.RECIPIENT_EMAIL }}'
-with smtplib.SMTP('${{ secrets.SMTP_SERVER }}', int('${{ secrets.SMTP_PORT }}')) as server:
+msg['From'] = os.environ['SMTP_USERNAME']
+msg['To'] = os.environ['RECIPIENT_EMAIL']
+with smtplib.SMTP(os.environ['SMTP_SERVER'], int(os.environ['SMTP_PORT'])) as server:
     server.starttls()
-    server.login('${{ secrets.SMTP_USERNAME }}', '${{ secrets.SMTP_PASSWORD }}')
+    server.login(os.environ['SMTP_USERNAME'], os.environ['SMTP_PASSWORD'])
     server.send_message(msg)
           "
