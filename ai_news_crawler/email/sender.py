@@ -2,7 +2,6 @@ import logging
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from email.header import Header
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -26,10 +25,11 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
     context = format_briefing(articles_by_category, settings)
     html = render_briefing(context)
 
+    # Create message with forced UTF-8 encoding everywhere
     msg = MIMEMultipart("alternative")
-    msg.add_header('Subject', str(Header(f"AI 每日简报 - {context['date']}", 'utf-8')))
-    msg.add_header('From', str(Header(settings.smtp_username, 'utf-8')))
-    msg.add_header('To', str(Header(settings.recipient_email, 'utf-8')))
+    msg['Subject'] = "AI 每日简报 - {}".format(context['date'])
+    msg['From'] = settings.smtp_username
+    msg['To'] = settings.recipient_email
 
     # Add HTML part (must come after plain text for MIME alternative)
     # Some clients prefer the last part
@@ -50,7 +50,9 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
             server.starttls()
 
         server.login(settings.smtp_username, settings.smtp_password)
-        server.send_message(msg)
+        # Convert message to bytes with UTF-8 encoding before sending
+        text = msg.as_string()
+        server.sendmail(settings.smtp_username, settings.recipient_email, text.encode('utf-8'))
         server.quit()
         logger.info(f"Email sent successfully to {settings.recipient_email}")
         return True
