@@ -27,9 +27,9 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
     html = render_briefing(context)
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = Header(f"AI 每日简报 - {context['date']}", 'utf-8')
-    msg["From"] = settings.smtp_username
-    msg["To"] = settings.recipient_email
+    msg.add_header('Subject', str(Header(f"AI 每日简报 - {context['date']}", 'utf-8')))
+    msg.add_header('From', str(Header(settings.smtp_username, 'utf-8')))
+    msg.add_header('To', str(Header(settings.recipient_email, 'utf-8')))
 
     # Add HTML part (must come after plain text for MIME alternative)
     # Some clients prefer the last part
