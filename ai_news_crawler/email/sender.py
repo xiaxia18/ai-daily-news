@@ -1,7 +1,12 @@
+import sys
 import logging
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+# Force UTF-8 encoding for everything
+if sys.version_info >= (3, 7):
+    sys.setdefaultencoding('utf-8')
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -25,9 +30,14 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
     context = format_briefing(articles_by_category, settings)
     html = render_briefing(context)
 
-    # Create message with forced UTF-8 encoding everywhere
+    # Clean html - replace &nbsp; (\xa0) to regular space
+    html = html.replace('\xa0', ' ')
+
+    # Create message
     msg = MIMEMultipart("alternative")
-    msg['Subject'] = "AI 每日简报 - {}".format(context['date'])
+    # Use encoded subject
+    from email.header import Header
+    msg['Subject'] = str(Header("AI Daily Briefing - {}".format(context['date']), 'utf-8'))
     msg['From'] = settings.smtp_username
     msg['To'] = settings.recipient_email
 
@@ -50,8 +60,10 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
             server.starttls()
 
         server.login(settings.smtp_username, settings.smtp_password)
-        # Convert message to bytes with UTF-8 encoding before sending
+        # Convert message to string first, then encode as UTF-8
         text = msg.as_string()
+        # Replace any remaining non-breaking spaces that might cause issues
+        text = text.replace('\xa0', ' ')
         server.sendmail(settings.smtp_username, settings.recipient_email, text.encode('utf-8'))
         server.quit()
         logger.info(f"Email sent successfully to {settings.recipient_email}")
