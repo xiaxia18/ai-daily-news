@@ -1,0 +1,282 @@
+sources:
+  # General AI Industry News
+  - name: "MIT Technology Review - AI"
+    url: "https://www.technologyreview.com/topic/artificial-intelligence/"
+    base_url: "https://www.technologyreview.com"
+    category: "industry"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "div[data-testid='Card-root']"
+    title_selector: "h2 a"
+    date_selector: "time"
+    summary_selector: "p[data-testid='dek']"
+    link_selector: "h2 a"
+    date_format: "%B %d, %Y"
+
+  - name: "VentureBeat - AI"
+    url: "https://venturebeat.com/category/ai/"
+    base_url: "https://venturebeat.com"
+    category: "industry"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "article.blog-card"
+    title_selector: "h2.blog-card__title a"
+    date_selector: "time.blog-card__date"
+    summary_selector: "p.blog-card__excerpt"
+    link_selector: "h2.blog-card__title a"
+    date_format: "%B %d, %Y"
+
+  - name: "Wired - AI"
+    url: "https://www.wired.com/tag/artificial-intelligence/"
+    base_url: "https://www.wired.com"
+    category: "industry"
+    origin: "international"
+    enabled: true
+    crawler_type: "beautifulsoup"
+    article_selector: "div.summary-item"
+    title_selector: "a"
+    date_selector: "time"
+    summary_selector: ".summary-item__dek p"
+    link_selector: "a"
+    date_format: "%B %d, %Y"
+    fetch_full_article: true
+    full_content_selector: "main"
+
+  - name: "TechCrunch - AI"
+    url: "https://techcrunch.com/category/artificial-intelligence/"
+    base_url: "https://techcrunch.com"
+    category: "industry"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "article.wp-block-post"
+    title_selector: "h3 a"
+    date_selector: "time"
+    summary_selector: "p.excerpt"
+    link_selector: "h3 a"
+
+  - name: "KDnuggets"
+    url: "https://www.kdnuggets.com/"
+    base_url: "https://www.kdnuggets.com"
+    category: "technology"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "li.post-item"
+    title_selector: "h3.title a"
+    date_selector: "span.date"
+    summary_selector: "div.excerpt"
+    link_selector: "h3.title a"
+    date_format: "%B %d, %Y"
+
+  - name: "OpenAI Blog"
+    url: "https://openai.com/blog"
+    base_url: "https://openai.com"
+    category: "industry"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "article"
+    title_selector: "h3 a"
+    date_selector: "time"
+    summary_selector: "p.text-gray-400"
+    link_selector: "h3 a"
+
+  # AI Academic Papers
+  - name: "arXiv - CS.AI Recent"
+    url: "https://arxiv.org/list/cs.AI/recent"
+    base_url: "https://arxiv.org"
+    category: "academic"
+    origin: "international"
+    enabled: true
+    crawler_type: "beautifulsoup"
+    article_selector: "dt"
+    link_selector: "a[href^='/abs/']"
+
+  - name: "Google AI Blog"
+    url: "https://ai.googleblog.com/"
+    base_url: "https://ai.googleblog.com"
+    category: "academic"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "div.post-outer"
+    title_selector: "h2.post-title a"
+    date_selector: ".post-footer .timestamp"
+    summary_selector: ".post-snippet"
+    link_selector: "h2.post-title a"
+    date_format: "%A, %B %d, %Y"
+
+  - name: "Meta AI Blog"
+    url: "https://ai.meta.com/blog/"
+    base_url: "https://ai.meta.com"
+    category: "academic"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "div.blog-feed-card"
+    title_selector: "h3.blog-feed-card__title a"
+    date_selector: "time"
+    summary_selector: "p.blog-feed-card__excerpt"
+    link_selector: "h3.blog-feed-card__title a"
+
+  # AI Technology/Engineering
+  - name: "The Batch - DeepLearning.AI"
+    url: "https://www.deeplearning.ai/the-batch/"
+    base_url: "https://www.deeplearning.ai"
+    category: "technology"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "article"
+    title_selector: "h3 a"
+    date_selector: "span[class*='date']"
+    summary_selector: "p"
+    link_selector: "h3 a"
+    date_format: "%B %d, %Y"
+
+  - name: "Microsoft AI Blog"
+    url: "https://blogs.microsoft.com/ai/"
+    base_url: "https://blogs.microsoft.com"
+    category: "technology"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "article.masonry-blog-card"
+    title_selector: "h3.entry-title a"
+    date_selector: "time.entry-date"
+    summary_selector: "p.entry-excerpt"
+    link_selector: "h3.entry-title a"
+    date_format: "%B %d, %Y"
+
+  # AI Jobs & Employment - Domestic Big Tech Companies
+  # 字节跳动 - 社会招聘 AI 相关岗位（限定北京/上海/广州/杭州）
+  - name: "字节跳动"
+    url: "https://jobs.bytedance.com/experienced/position?keywords=AI&city=杭州,上海,广州,北京"
+    base_url: "https://jobs.bytedance.com"
+    category: "jobs"
+    origin: "domestic"
+    enabled: true
+    crawler_type: "selenium"
+    article_selector: "div.positionItem"
+    title_selector: "span.positionItem-title-text"
+    summary_selector: "div[class*='jobDesc']"
+    link_selector:
+    needs_resolve_url: false
+
+  # 阿里巴巴 - AI 相关岗位 (currently blocked by anti-crawler, disabled)
+  - name: "阿里巴巴"
+    url: "https://job.alibaba.com/zhaopin/positionList.htm?keyWord=AI"
+    base_url: "https://job.alibaba.com"
+    category: "jobs"
+    origin: "domestic"
+    enabled: false
+    crawler_type: "selenium"
+    article_selector: "tr.even, tr.odd"
+    title_selector: "td a span"
+    summary_selector: "td:nth-child(4)"
+    link_selector: "td a"
+    needs_resolve_url: true
+
+  # 腾讯 - AI 相关岗位
+  - name: "腾讯"
+    url: "https://careers.tencent.com/search.html?keyword=AI"
+    base_url: "https://careers.tencent.com"
+    category: "jobs"
+    origin: "domestic"
+    enabled: true
+    crawler_type: "selenium"
+    article_selector: "div.recruit-list"
+    title_selector: "span.job-recruit-title"
+    summary_selector: "p.recruit-text"
+    link_selector: "a.recruit-list-link"
+    needs_resolve_url: false
+
+  # 百度 - AI 相关岗位 (currently blocked by anti-crawler, disabled)
+  - name: "百度"
+    url: "https://talent.baidu.com/jobs/list?keyWord=AI"
+    base_url: "https://talent.baidu.com"
+    category: "jobs"
+    origin: "domestic"
+    enabled: false
+    crawler_type: "selenium"
+    article_selector: "li.clearfix"
+    title_selector: "h3 a"
+    summary_selector: "div.job-info"
+    link_selector: "h3 a"
+    needs_resolve_url: true
+
+  # International job board (disabled for now)
+  - name: "Hugging Face Jobs"
+    url: "https://huggingface.co/jobs"
+    base_url: "https://huggingface.co"
+    category: "jobs"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "article.border-border"
+    title_selector: "h3 a"
+    summary_selector: "p.text-gray-600"
+    link_selector: "h3 a"
+    needs_resolve_url: true
+
+  - name: "AI Jobs"
+    url: "https://aijobs.net"
+    base_url: "https://aijobs.net"
+    category: "jobs"
+    origin: "international"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "ul.list-unstyled > li"
+    title_selector: "div div a"
+    date_selector: "span div:last-child"
+    summary_selector: "span div:first-child"
+    link_selector: "div div a"
+    date_format: "%B %d"
+    needs_resolve_url: true
+
+  - name: "机器之心 - AI"
+    url: "https://www.jiqizhixin.com/ai"
+    base_url: "https://www.jiqizhixin.com"
+    category: "industry"
+    origin: "domestic"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "article[data-post-id]"
+    title_selector: "header a"
+    date_selector: "header .date"
+    summary_selector: "div.article-excerpt p"
+    link_selector: "header a"
+    date_format: "%Y-%m-%d"
+    needs_resolve_url: true
+
+  - name: "开源中国 - AI"
+    url: "https://www.oschina.net/news/tag/ai"
+    base_url: "https://www.oschina.net"
+    category: "industry"
+    origin: "domestic"
+    enabled: true
+    crawler_type: "beautifulsoup"
+    article_selector: "div.news-item"
+    title_selector: "h3.header .title"
+    date_selector: ".extra .item:first-child"
+    summary_selector: ".description p.line-clamp"
+    link_selector: "[data-url]"
+    date_format: "%Y-%m-%d"
+    link_attr: "data-url"
+
+  - name: "CSDN - AI"
+    url: "https://blog.csdn.net/rank/list/1091"
+    base_url: "https://blog.csdn.net"
+    category: "industry"
+    origin: "domestic"
+    enabled: false
+    crawler_type: "beautifulsoup"
+    article_selector: "div.blog-list-item"
+    title_selector: "div.title a"
+    date_selector: "p.info span:nth-child(3)"
+    summary_selector: "div.intro"
+    link_selector: "div.title a"
+    date_format: "%Y-%m-%d"

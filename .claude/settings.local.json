@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(python -m compileall -q .)",
+      "Bash(python3 -m compileall -q .)",
+      "Bash(python3 main.py)",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(pip3 install:*)"
+    ]
+  }
+}
