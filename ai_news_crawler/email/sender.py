@@ -24,17 +24,19 @@ def render_briefing(context: Dict, template_path: str = "ai_news_crawler/email/t
 
 def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: Settings) -> bool:
     """Compile articles into briefing and send email."""
+    from email.header import Header
     context = format_briefing(articles_by_category, settings)
     html = render_briefing(context)
 
     # Clean html - replace &nbsp; (\xa0) to regular space
     html = html.replace('\xa0', ' ')
+    html = html.replace(u'\xa0', ' ')
 
-    # Create message
+    # Create message with properly encoded headers
     msg = MIMEMultipart("alternative")
-    # Use encoded subject
-    from email.header import Header
-    msg['Subject'] = str(Header("AI Daily Briefing - {}".format(context['date']), 'utf-8'))
+    # Encode subject with UTF-8
+    subject = "AI 每日简报 - {}".format(context['date'])
+    msg['Subject'] = str(Header(subject, 'utf-8'))
     msg['From'] = settings.smtp_username
     msg['To'] = settings.recipient_email
 
@@ -57,10 +59,13 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
             server.starttls()
 
         server.login(settings.smtp_username, settings.smtp_password)
-        # Convert message to string first, then encode as UTF-8
+        # Convert message to string first
         text = msg.as_string()
-        # Replace any remaining non-breaking spaces that might cause issues
+        # Replace ALL non-breaking spaces (\xa0) with regular spaces
+        # This fixes the "ascii codec can't encode" error
         text = text.replace('\xa0', ' ')
+        text = text.replace(u'\xa0', ' ')
+        # Encode as UTF-8 before sending
         server.sendmail(settings.smtp_username, settings.recipient_email, text.encode('utf-8'))
         server.quit()
         logger.info(f"Email sent successfully to {settings.recipient_email}")
