@@ -13,7 +13,7 @@ def main():
     password = os.environ['SMTP_PASSWORD']
     recipient = os.environ['RECIPIENT_EMAIL']
 
-    msg = MIMEText('The daily AI news crawler failed. Please check the GitHub Actions run.')
+    msg = MIMEText('The daily AI news crawler failed. Please check the GitHub Actions run.', 'plain', 'utf-8')
     msg['Subject'] = 'ALERT: AI Daily Briefing Failed'
     msg['From'] = username
     msg['To'] = recipient

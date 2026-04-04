@@ -33,10 +33,10 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
     # Add HTML part (must come after plain text for MIME alternative)
     # Some clients prefer the last part
     text_content = "Please view this email in an HTML-enabled email client."
-    text_part = MIMEText(text_content, "plain")
+    text_part = MIMEText(text_content, "plain", "utf-8")
     msg.attach(text_part)
 
-    html_part = MIMEText(html, "html")
+    html_part = MIMEText(html, "html", "utf-8")
     msg.attach(html_part)
 
     try:
