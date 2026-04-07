@@ -25,36 +25,46 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
     context = format_briefing(articles_by_category, settings)
     html = render_briefing(context)
 
-    # Clean everything: replace ALL non-breaking spaces with regular spaces
+    # CRITICAL: Replace ALL non-breaking spaces (\xa0) with regular spaces
+    # This MUST happen before creating the email message to prevent ASCII encoding errors
     html = html.replace('\xa0', ' ')
     html = html.replace(u'\xa0', ' ')
 
-    # Use EmailMessage API which handles UTF-8 properly in Python 3
+    # Clean date string as well
+    date_str = context['date'].replace('\xa0', ' ').replace(u'\xa0', ' ')
+
+    # Use EmailMessage API which properly handles UTF-8 in Python 3
     msg = EmailMessage()
-    msg['Subject'] = f"AI 每日简报 - {context['date']}"
+    # EmailMessage automatically encodes header values properly when containing non-ASCII chars
+    msg['Subject'] = f"AI 每日简报 - {date_str}"
     msg['From'] = settings.smtp_username
     msg['To'] = settings.recipient_email
 
-    # Set content with explicit UTF-8 charset - this handles all encoding automatically
+    # Set content with explicit UTF-8 charset
+    # This tells SMTP to use 8-bit transfer encoding automatically
     msg.set_content(html, subtype='html', charset='utf-8')
 
     try:
         if settings.smtp_port == 465:
-            # SSL connection
             server = smtplib.SMTP_SSL(settings.smtp_server, settings.smtp_port, timeout=60)
         else:
-            # STARTTLS
             server = smtplib.SMTP(settings.smtp_server, settings.smtp_port, timeout=60)
             server.starttls()
 
         server.login(settings.smtp_username, settings.smtp_password)
 
-        # EmailMessage.as_bytes() encodes everything properly as UTF-8
+        # Get message as bytes for debugging
+        msg_bytes = msg.as_bytes()
+        logger.info(f"Message encoded successfully, size: {len(msg_bytes)} bytes")
+
+        # Use send_message which properly handles bytes in Python 3
         server.send_message(msg)
 
         server.quit()
         logger.info(f"Email sent successfully to {settings.recipient_email}")
         return True
     except Exception as e:
+        import traceback
         logger.error(f"Failed to send email: {e}")
+        logger.error(f"Full traceback: {traceback.format_exc()}")
         return False
