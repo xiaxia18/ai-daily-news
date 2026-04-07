@@ -1,9 +1,7 @@
 import sys
 import logging
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.header import Header
+from email.message import EmailMessage
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -28,31 +26,17 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
     html = render_briefing(context)
 
     # Clean everything: replace ALL non-breaking spaces with regular spaces
-    # This fixes the 'ascii codec can't encode character \xa0' error
     html = html.replace('\xa0', ' ')
     html = html.replace(u'\xa0', ' ')
 
-    # Create message
-    msg = MIMEMultipart("alternative")
-
-    # Encode subject with UTF-8, and also clean \xa0
-    subject = "AI 每日简报 - {}".format(context['date'])
-    subject = subject.replace('\xa0', ' ')
-    subject = subject.replace(u'\xa0', ' ')
-    msg['Subject'] = str(Header(subject, 'utf-8'))
-
+    # Use EmailMessage API which handles UTF-8 properly in Python 3
+    msg = EmailMessage()
+    msg['Subject'] = f"AI 每日简报 - {context['date']}"
     msg['From'] = settings.smtp_username
     msg['To'] = settings.recipient_email
 
-    # Add HTML part (must come after plain text for MIME alternative)
-    # Some clients prefer the last part
-    text_content = "Please view this email in an HTML-enabled email client."
-    text_content = text_content.replace('\xa0', ' ')
-    text_part = MIMEText(text_content, "plain", "utf-8")
-    msg.attach(text_part)
-
-    html_part = MIMEText(html, "html", "utf-8")
-    msg.attach(html_part)
+    # Set content with explicit UTF-8 charset - this handles all encoding automatically
+    msg.set_content(html, subtype='html', charset='utf-8')
 
     try:
         if settings.smtp_port == 465:
@@ -65,16 +49,8 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
 
         server.login(settings.smtp_username, settings.smtp_password)
 
-        # Get the entire message as string
-        text = msg.as_string()
-        # Replace any remaining non-breaking spaces one more time
-        text = text.replace('\xa0', ' ')
-        text = text.replace(u'\xa0', ' ')
-
-        # Encode the entire thing as UTF-8 before sending
-        # This guarantees no ASCII encoding errors
-        bytes_data = text.encode('utf-8')
-        server.sendmail(settings.smtp_username, settings.recipient_email, bytes_data)
+        # EmailMessage.as_bytes() encodes everything properly as UTF-8
+        server.send_message(msg)
 
         server.quit()
         logger.info(f"Email sent successfully to {settings.recipient_email}")
