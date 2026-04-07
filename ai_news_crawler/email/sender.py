@@ -51,7 +51,7 @@ def compile_and_send(articles_by_category: Dict[str, List[Article]], settings: S
             server = smtplib.SMTP(settings.smtp_server, settings.smtp_port, timeout=60)
             server.starttls()
 
-        server.login(settings.smtp_username, settings.smtp_password)
+        server.login(settings.smtp_username.replace('\xa0', '').replace(u'\xa0', ''), settings.smtp_password.replace('\xa0', '').replace(u'\xa0', ''))
 
         # Get message as bytes for debugging
         msg_bytes = msg.as_bytes()
